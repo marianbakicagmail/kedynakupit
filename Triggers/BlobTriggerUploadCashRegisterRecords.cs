@@ -21,15 +21,14 @@ namespace KedyNakupit
 
                 var rows = data as CashRegisterRecord[];
 
-                var totalCount = 0;
                 if (rows != null)
                 {
                     log.LogInformation($"Processing started. Count: {rows.Length}");
 
                     var processor = new RecordProcessorFast(log);
-                    totalCount = processor.ProcessRecords(rows);
+                    processor.ProcessRecords(rows);
 
-                    log.LogInformation($"Processed {totalCount}/{rows.Length}");
+                    log.LogInformation($"Processed {rows.Length}");
                 }
             }
 

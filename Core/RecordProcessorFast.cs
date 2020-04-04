@@ -12,12 +12,11 @@ public class RecordProcessorFast
         _log = log;
     }
 
-    public int ProcessRecords(CashRegisterRecord[] records)
+    public void ProcessRecords(CashRegisterRecord[] records)
     {
-        int count = 0;
         try
         {
-            var cString = "";
+            var cString ="";
             using (var ctx = new KedyNakupitContext())
             {
                 cString = ctx.Database.GetDbConnection().ConnectionString;
@@ -44,6 +43,7 @@ public class RecordProcessorFast
             conn.Open();
             using (var bulk = new SqlBulkCopy(conn))
             {
+                bulk.BulkCopyTimeout = 1000000;
                 bulk.DestinationTableName = "CashRegisterRecord";
                 bulk.WriteToServer(table);
             }
@@ -52,9 +52,7 @@ public class RecordProcessorFast
         catch (Exception ex)
         {
             var innerText = ex.InnerException != null ? ex.InnerException.Message : "";
-            _log.LogWarning($"Could not import rows count: {count} ex: {ex.Message} inner: {innerText}");
+            _log.LogWarning($"Could not import rows. ex: {ex.Message} inner: {innerText}");
         }
-
-        return count;
     }
 }
